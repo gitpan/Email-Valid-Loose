@@ -16,13 +16,15 @@ my @invalid = (
     'foobar@doo.com ',
 );
 
-plan tests => (@valid + @invalid);
+plan tests => (@valid + @invalid) * 2;
 
 for (@valid) {
     ok( Email::Valid::Loose->address($_), $_ );
+    ok( Email::Valid::Loose->address(-address => $_), $_);
 }
 
 for (@invalid) {
     ok( !Email::Valid::Loose->address($_), $_ );
+    ok( !Email::Valid::Loose->address(-address => $_), $_ );
 }
 

@@ -2,7 +2,7 @@ package Email::Valid::Loose;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use Email::Valid ();
 use base qw(Email::Valid);
@@ -44,9 +44,9 @@ sub rfc822 {
     return 1;
 }
 
-# XXX hack _rearrange to allowi '-foobar@example.com'
+# XXX hack _rearrange to allow '-foobar@example.com'
 
-my $Keys_Re = join '|', keys %Email::Valid::AUTOLOAD;
+my $Keys_Re = join '|', keys(%Email::Valid::AUTOLOAD), "address";
 
 sub _rearrange {
     my $self = shift;
