@@ -1,4 +1,5 @@
-use strict;use Test::More tests => 4;
+use strict;
+use Test::More tests => 6;
 
 use Email::Valid::Loose;
 
@@ -10,6 +11,8 @@ my @valid = (
 my @invalid = (
     'doobar',
     'doo[@eeee.com',
+    '',
+    'foobar@doo.com ',
 );
 
 for (@valid) {
