@@ -2,7 +2,7 @@ package Email::Valid::Loose;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use Email::Valid ();
 use base qw(Email::Valid);
@@ -42,6 +42,35 @@ sub rfc822 {
 
     return $self->details('rfc822') unless $addr =~ m/^$Addr_spec_re$/o;
     return 1;
+}
+
+# XXX hack _rearrange to allowi '-foobar@example.com'
+
+my $Keys_Re = join '|', keys %Email::Valid::AUTOLOAD;
+
+sub _rearrange {
+    my $self = shift;
+    my(@names)  = @{ shift() };
+    my(@params) = @{ shift() };
+    my(%args);
+
+    ref $self ? %args = %$self : Email::Valid::_initialize( \%args );
+    return %args unless @params;
+
+    unless ($params[0] =~ /^-(?:$Keys_Re)$/) {
+	while(@params) {
+	    Carp::croak('unexpected number of parameters') unless @names;
+	    $args{ lc shift @names } = shift @params;
+	}
+	return %args;
+    }
+
+    while(@params) {
+	my $param = lc substr(shift @params, 1);
+	$args{ $param } = shift @params;
+    }
+
+    %args;
 }
 
 1;
