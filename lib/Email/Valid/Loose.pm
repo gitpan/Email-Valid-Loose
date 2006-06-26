@@ -1,10 +1,9 @@
 package Email::Valid::Loose;
 
 use strict;
-use vars qw($VERSION);
-$VERSION = '0.04';
+our $VERSION = '0.05';
 
-use Email::Valid ();
+use Email::Valid 0.17;
 use base qw(Email::Valid);
 
 # This is BNF from RFC822
@@ -43,36 +42,6 @@ sub rfc822 {
     return $self->details('rfc822') unless $addr =~ m/^$Addr_spec_re$/o;
     return 1;
 }
-
-# XXX hack _rearrange to allow '-foobar@example.com'
-
-my $Keys_Re = join '|', keys(%Email::Valid::AUTOLOAD), "address";
-
-sub _rearrange {
-    my $self = shift;
-    my(@names)  = @{ shift() };
-    my(@params) = @{ shift() };
-    my(%args);
-
-    ref $self ? %args = %$self : Email::Valid::_initialize( \%args );
-    return %args unless @params;
-
-    unless ($params[0] =~ /^-(?:$Keys_Re)$/) {
-	while(@params) {
-	    Carp::croak('unexpected number of parameters') unless @names;
-	    $args{ lc shift @names } = shift @params;
-	}
-	return %args;
-    }
-
-    while(@params) {
-	my $param = lc substr(shift @params, 1);
-	$args{ $param } = shift @params;
-    }
-
-    %args;
-}
-
 1;
 __END__
 
